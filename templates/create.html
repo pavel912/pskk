@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create account</title>
+</head>
+<body>
+    <form action="/create" method="post" class="form-example">
+        <div class="form-example">
+            <label for="username">Enter your login: </label>
+            <input type="text" name="username" id="username" required>
+        </div>
+        <div class="form-example">
+            <label for="password">Enter your password: </label>
+            <input type="password" name="password" id="password" required>
+        </div>
+        <div class="form-example">
+            <label for="email">Enter your login: </label>
+            <input type="email" name="email" id="email" required>
+        </div>
+        <div class="form-example">
+            <input type="submit" value="Create account">
+        </div>
+        {% if flash_message %}
+          {% block content %}
+          <div class="alert alert-info">{{ flash_message }}</div>
+          {% endblock content %}
+        {% endif%}
+    </form>
+</body>
+</html>

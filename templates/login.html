@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+  <form action="/login" method="post" class="form-example">
+    <div class="form-example">
+      <label for="username">Enter your login: </label>
+      <input type="text" name="username" id="username" required>
+    </div>
+    <div class="form-example">
+      <label for="password">Enter your password: </label>
+      <input type="password" name="password" id="password" required>
+    </div>
+    <div class="form-example">
+      <input type="submit" value="Login">
+    </div>
+    {% if flash_message %}
+      {% block content %}
+      <div class="alert alert-info">{{ flash_message }}</div>
+      {% endblock content %}
+    {% endif%}
+  </form>
+  <a href="/create">Create account</a>
+</body>
