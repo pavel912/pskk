@@ -1,8 +1,8 @@
-from User import User
+from entities.User import User
 import re
 import datetime as dt
 
-class DataValidator:
+class Data_Validator:
     string_pattern = re.compile("[a-zA-Z0-9]+")
     email_pattern = re.compile("[a-zA-Z0-9]+@([a-z]{3,}.)+[a-z]{2,}")
 

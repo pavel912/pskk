@@ -1,10 +1,10 @@
-from User import User, Base
+from entities.User import User, Base
 from sqlalchemy import create_engine, select, update
 from sqlalchemy.orm import Session, Query
 import datetime as dt
 
 
-class LoginHandler:
+class DB_Handler:
     def __init__(self):
         self.engine = create_engine("sqlite:///C:\\Users\\lob55\\PycharmProjects\\pythonProject\\db\\pskk_db", echo=True, future=True)
 

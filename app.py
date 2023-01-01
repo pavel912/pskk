@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, abort, make_response
-from User import User
-from LoginHandler import LoginHandler
-from DataValidator import DataValidator
+from flask import Flask, render_template, request, redirect, url_for, make_response
+from entities.User import User
+from utils.DB_Handler import DB_Handler
+from utils.Data_Validator import Data_Validator
 
 app = Flask("App")
-loginHandler = LoginHandler()
+loginHandler = DB_Handler()
 loginHandler.add_test_users()
 
 
@@ -34,7 +34,7 @@ def create_user_get():
 
 @app.post('/create')
 def create_user_post():
-    validator = DataValidator()
+    validator = Data_Validator()
 
     user_data = User(request.form["username"],
         request.form["password"],
@@ -72,7 +72,7 @@ def update_user_data_get(id):
 
 @app.post("/user/id/<id>/update_data")
 def update_user_data_post(id):
-    validator = DataValidator()
+    validator = Data_Validator()
 
     user = loginHandler.get_user_by_id(id)
 
@@ -103,7 +103,7 @@ def update_user_password_get(id):
 
 @app.post("/user/id/<id>/update_password")
 def update_user_password_post(id):
-    validator = DataValidator()
+    validator = Data_Validator()
 
     user = loginHandler.get_user_by_id(id)
 

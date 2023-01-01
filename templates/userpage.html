@@ -5,8 +5,9 @@
     <title>My page</title>
 </head>
 <body>
-  <h1>Hello {{ user.username }}!</h1>
+  <h1>Добрый день, {{ user.name }}!</h1>
   <ul>
+    <li>Мои проекты</li>
     <li><a href="/user/id/{{ user.id }}/update_data">Chenge your data</a></li>
     <li><a href="/user/id/{{ user.id }}/update_password">Chenge your password</a></li>
     <li><a href="/login">Logout</a></li>
