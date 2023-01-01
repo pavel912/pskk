@@ -1,6 +1,7 @@
 from User import User, Base
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, select, update
 from sqlalchemy.orm import Session, Query
+import datetime as dt
 
 
 class LoginHandler:
@@ -18,6 +19,21 @@ class LoginHandler:
         session = Session(self.engine)
 
         session.add(user)
+
+        session.commit()
+        session.close()
+
+        return True
+    
+    def update_user(self, user: User) -> bool:
+        session = Session(self.engine)
+
+        user_dict = user.__dict__
+        user_dict.pop("_sa_instance_state")
+
+        query = update(User).values(user_dict).where(User.id == user.id)
+
+        session.execute(query)
 
         session.commit()
         session.close()
@@ -55,5 +71,5 @@ class LoginHandler:
 
 
     def add_test_users(self):
-        user = User("admin", "admin")
+        user = User("plobanov", "Lobanov912", "aaaa@mail.ru", "Pavel", "Lobanov", "Yurievich", dt.date(2001, 4, 18), "Analyst", "Ozon")
         self.create_user(user)

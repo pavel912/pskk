@@ -24,7 +24,7 @@ def login_post():
     if not user:
         return make_response(render_template('login.html', flash_message="Incorrect login or password"), 401)
 
-    return redirect(f"/user/{user.id}")
+    return redirect(f"/user/id/{user.id}")
 
 
 @app.get('/create')
@@ -62,6 +62,66 @@ def create_user_post():
     return redirect("/login")
 
 
-@app.get("/user/<id>")
+@app.get("/user/id/<id>")
 def user_page_get(id):
     return render_template('userpage.html', user=loginHandler.get_user_by_id(id))
+
+@app.get("/user/id/<id>/update_data")
+def update_user_data_get(id):
+    return render_template('update_data.html', user_data=loginHandler.get_user_by_id(id))
+
+@app.post("/user/id/<id>/update_data")
+def update_user_data_post(id):
+    validator = DataValidator()
+
+    user = loginHandler.get_user_by_id(id)
+
+    user.update_data(
+        request.form["username"],
+        request.form["email"],
+        request.form["name"],
+        request.form["surname"],
+        request.form["fathers_name"],
+        validator.convert_string_to_date(request.form["date_of_birth"]),
+        request.form["job_role"],
+        request.form["company_name"])
+
+    error_messages = validator.validate_user_data(user)
+
+    if not user:
+        error_messages.append("User with this username and password does not exist")
+
+    if error_messages:
+        return make_response(render_template('update_data.html', error_messages=error_messages, user_data=user), 401)
+
+    loginHandler.update_user(user)
+    return redirect(f"/user/id/{user.id}")
+
+@app.get("/user/id/<id>/update_password")
+def update_user_password_get(id):
+    return render_template('update_password.html', user_data=loginHandler.get_user_by_id(id))
+
+@app.post("/user/id/<id>/update_password")
+def update_user_password_post(id):
+    validator = DataValidator()
+
+    user = loginHandler.get_user_by_id(id)
+
+    if not user:
+        error_messages.append("User with this username and password does not exist")
+    elif request.form["password"] != user.password:
+        print(request.form["password"], user.password)
+        error_messages.append("Incorrect password")
+    elif request.form["new_password"] != request.form["confirm_password"]:
+        error_messages.append("Passwords do not match")
+
+    user.update_password(
+        request.form["new_password"])
+
+    error_messages = validator.validate_user_data(user)
+
+    if error_messages:
+        return make_response(render_template('update_password.html', error_messages=error_messages, user_data=user), 401)
+
+    loginHandler.update_user(user)
+    return redirect(f"/user/id/{user.id}")

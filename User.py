@@ -42,3 +42,16 @@ class User(Base):
         self.date_of_birth = date_of_birth
         self.job_role = job_role
         self.company_name = company_name
+
+    def update_data(self, username: str, email: str = '', name: str = '', surname: str = '', fathers_name: str = '', date_of_birth: dt.date = dt.date(1, 1, 1), job_role: str = '', company_name: str = ''):
+        self.username = username
+        self.email = email
+        self.name = name
+        self.surname = surname
+        self.fathers_name = fathers_name
+        self.date_of_birth = date_of_birth
+        self.job_role = job_role
+        self.company_name = company_name
+
+    def update_password(self, pasword: str):
+        self.password = pasword

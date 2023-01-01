@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update account data</title>
+</head>
+<body>
+    <form action="/user/id/{{ user_data.id }}/update_data" method="post" class="form-example">
+        <div class="form-example">
+            <label for="email">Enter your email: </label>
+            <input type="email" name="email" id="email" required value={{ user_data.email if user_data else "" }}>
+        </div>
+        <div class="form-example">
+            <label for="name">Enter your name: </label>
+            <input type="text" name="name" id="name" required value={{ user_data.name if user_data else "" }}>
+        </div>
+        <div class="form-example">
+            <label for="surname">Enter your surname: </label>
+            <input type="text" name="surname" id="surname" required value={{ user_data.surname if user_data else "" }}>
+        </div>
+        <div class="form-example">
+            <label for="fathers_name">Enter your farther's name: </label>
+            <input type="text" name="fathers_name" id="fathers_name" value={{ user_data.fathers_name if user_data else "" }}>
+        </div>
+        <div class="form-example">
+            <label for="date_of_birth">Enter your date of birth: </label>
+            <input type="date" name="date_of_birth" id="date_of_birth" value={{ user_data.date_of_birth if user_data else "" }}>
+        </div>
+        <div class="form-example">
+            <label for="job_role">Enter your job role: </label>
+            <input type="text" name="job_role" id="job_role" value={{ user_data.job_role if user_data else "" }}>
+        </div>
+        <div class="form-example">
+            <label for="company_name">Enter your place of occupation: </label>
+            <input type="text" name="company_name" id="company_name" value={{ user_data.company_name if user_data else "" }}>
+        </div>
+        <div class="form-example">
+            <label for="username">Enter your login: </label>
+            <input type="text" name="username" id="username" required value={{ user_data.username if user_data else "" }}>
+        </div>
+        <div class="form-example">
+            <input type="submit" value="Update data">
+        </div>
+    </form>
+    <div class="alert-message block-message error">
+        <ul>
+          {%- for msg in error_messages %}
+          <li><font size="4" face="verdana" color="red"> {{ msg }} </font></li>
+          {% endfor -%}
+        </ul>
+      </div>
+</body>
+</html>
