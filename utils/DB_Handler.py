@@ -6,8 +6,9 @@ import datetime as dt
 
 class DB_Handler:
     def __init__(self):
-        self.engine = create_engine("sqlite:///C:\\Users\\lob55\\PycharmProjects\\pythonProject\\db\\pskk_db", echo=True, future=True)
+        self.engine = create_engine("sqlite:///db/pskk_db", echo=True, future=True)
 
+        # TODO: add Kirill's sql
         session = Session(self.engine)
         session.execute("DROP TABLE IF EXISTS user;")
         session.commit()
