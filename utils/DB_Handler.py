@@ -69,7 +69,38 @@ class DB_Handler:
 
         return user_return
 
+    def is_unique_username(self, username: str):
+        session = Session(self.engine)
+
+        query = select(User).where(User.username == username)
+
+        users = session.execute(query).fetchall()
+
+        session.close()
+
+        if users:
+            return False
+
+        return True
+    
+    def is_unique_password(self, password: str):
+        session = Session(self.engine)
+
+        query = select(User).where(User.password == password)
+
+        users = session.execute(query).fetchall()
+
+        session.close()
+
+        if users:
+            return False
+
+        return True
+
 
     def add_test_users(self):
-        user = User("plobanov", "Lobanov912", "aaaa@mail.ru", "Pavel", "Lobanov", "Yurievich", dt.date(2001, 4, 18), "Analyst", "Ozon")
-        self.create_user(user)
+        user1 = User("bob", "bob", "bob@mail.ru", "Bob", "Bobob", "Bobich", dt.date(2001, 4, 18), "Analyst", "Ozon")
+        user2 = User("bib", "bib", "bib@mail.ru", "Bib", "Bibib", "Bibich", dt.date(2001, 4, 19), "Dev", "Zozon")
+
+        self.create_user(user1)
+        self.create_user(user2)
