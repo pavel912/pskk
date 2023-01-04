@@ -1,5 +1,5 @@
 from entities.User import User, Base
-from sqlalchemy import create_engine, select, update
+from sqlalchemy import create_engine, select, update, func
 from sqlalchemy.orm import Session, Query
 import datetime as dt
 
@@ -69,30 +69,30 @@ class DB_Handler:
 
         return user_return
 
-    def is_unique_username(self, username: str):
+    def is_unique_username(self, username: str) -> bool:
         session = Session(self.engine)
 
         query = select(User).where(User.username == username)
 
-        users = session.execute(query).fetchall()
+        any_user = session.execute(query).first()
 
         session.close()
 
-        if users:
+        if any_user:
             return False
 
         return True
     
-    def is_unique_password(self, password: str):
+    def is_unique_password(self, password: str) -> bool:
         session = Session(self.engine)
 
         query = select(User).where(User.password == password)
 
-        users = session.execute(query).fetchall()
+        any_user = session.execute(query).first()
 
         session.close()
 
-        if users:
+        if any_user:
             return False
 
         return True
