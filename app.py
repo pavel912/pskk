@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, make_respo
 from entities.User import User
 from utils.DB_Handler import DB_Handler
 from utils.Data_Validator import Data_Validator
+from werkzeug.utils import secure_filename
 
 app = Flask("App")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/' # replace it letter for safety issues
@@ -61,6 +62,10 @@ def create_user_post():
         validator.convert_string_to_date(request.form["date_of_birth"]),
         request.form["job_role"],
         request.form["company_name"])
+
+    # file upload example
+    file = request.files['photo']
+    file.save("/mnt/c/Users/plobanov/Documents/" + secure_filename(file.filename))
 
     error_messages += validator.validate_user_data(user_data)
 
