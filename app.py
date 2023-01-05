@@ -8,7 +8,7 @@ app = Flask("App")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/' # replace it latter for safety issues
 
 DB_Handler = DB_Handler()
-DB_Handler.add_test_users()
+DB_Handler.add_test_data()
 
 
 @app.get('/')
@@ -183,3 +183,15 @@ def update_user_password_post(id):
 
     DB_Handler.update_user(user)
     return redirect(f"/user/id/{user.id}")
+
+@app.get("/user/id/<id>/projects")
+def users_projects_get(id): # quite shitty shit
+    projects = DB_Handler.get_users_projects(id)
+
+    if projects is None:
+        abort(404)
+
+    if ("user_id" not in session) | (session["user_id"] != int(id)):
+        return redirect("/login")
+
+    return render_template('projects.html', user_id=id, projects=projects)
