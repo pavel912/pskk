@@ -5,7 +5,7 @@ from utils.Data_Validator import Data_Validator
 from werkzeug.utils import secure_filename
 
 app = Flask("App")
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/' # replace it letter for safety issues
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/' # replace it latter for safety issues
 
 DB_Handler = DB_Handler()
 DB_Handler.add_test_users()
