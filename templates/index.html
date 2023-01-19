@@ -1,0 +1,17 @@
+{% block content %}
+<h2>ПСКК - тестовый запуск</h2>
+<h4><a href="\login"><span>Личный кабинет</span></a> </h4>
+{% for post in posts %}
+<small>{{ post.date }}</small>
+<p>
+  <h3>
+    {{ post.title }}
+  </h3> 
+<p>
+  <i>{{ post.description }}</i>
+</p>
+  <p>{{ post.html[:100]|safe }}</p> 
+    <a href="{{ post.path }}"><span>Читать</span></a> 
+</p>
+{% endfor %}
+{% endblock content %}

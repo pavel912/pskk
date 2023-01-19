@@ -3,9 +3,16 @@ from entities.User import User
 from utils.DB_Handler import DB_Handler
 from utils.Data_Validator import Data_Validator
 from werkzeug.utils import secure_filename
+from flask_flatpages import FlatPages
+
+POST_DIR = 'posts'
+FLATPAGES_EXTENSION = '.md'
+FLATPAGES_ROOT = 'content'
 
 app = Flask("App")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/' # replace it latter for safety issues
+flatpages = FlatPages(app)
+app.config.from_object(__name__)
 
 DB_Handler = DB_Handler()
 DB_Handler.add_test_data()
@@ -13,8 +20,15 @@ DB_Handler.add_test_data()
 
 @app.get('/')
 def index_get():
-    return redirect(url_for("login_get"))
+    posts = [p for p in flatpages if p.path.startswith(POST_DIR)]
+    posts.sort(key=lambda item: item['date'], reverse=True)
+    return render_template('index.html', posts=posts, bigheader=True)
 
+@app.get('/posts/<name>/')
+def post_get(name):
+    path = '{}/{}'.format(POST_DIR, name)
+    post = flatpages.get_or_404(path)
+    return render_template('post.html', post=post)
 
 @app.get('/login')
 def login_get():
