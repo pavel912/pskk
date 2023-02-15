@@ -1,29 +1,42 @@
-from sqlalchemy import Column, Integer, String, DATE
-from sqlalchemy.orm import relationship
 import datetime as dt
-from entities.Base import Base
-from entities.Assosiations import user_skill
+from entities.Associations import tie_user_skill, tie_company_skill, tie_project_skill
+from sqlalchemy import Column, String, Integer, DATETIME
+from sqlalchemy.orm import relationship
+from app_db import db
 
-class Project(Base):
-    __tablename__ = "skill"
 
+class Skill(db.Model):
     id = Column(Integer, primary_key=True)
 
     name = Column(String(256))
 
-    type = Column(String(64))
+    skill_type = Column(String(64))
 
-    status = Column(String(64)) #approved or not
+    status = Column(String(64))  # approved or not
 
-    users = relationship("Skill", secondary=user_skill, back_populates='users')
+    description = Column(String(256))
+
+    created_at = Column(DATETIME)
+
+    users = relationship("User", secondary=tie_user_skill, back_populates='skills', lazy="joined")
+
+    companies = relationship("Company", secondary=tie_company_skill, back_populates='skills', lazy="joined")
+
+    projects = relationship("Project", secondary=tie_project_skill, back_populates='required_skills', lazy="joined")
 
     def __repr__(self):
         ...
-        return f"Project(id={self.id!r}, name={self.name!r}, created_at={self.created_at!r})"
+        return f"Skill(id={self.id!r}, name={self.name!r}, skill_type={self.skill_type!r})"
 
-    def __init__(self, name: str, type: str, description: str = '', status: str = '', users = []):
+    def __init__(self, name: str, skill_type: str, status: str, description: str = '', users: list = None,
+                 companies: list = None, projects: list = None, id: int = None,
+                 created_at: dt.datetime = dt.datetime.now()):
         self.name = name
-        self.type = type
-        self.description = description
+        self.skill_type = skill_type
         self.status = status
-        self.users = users
+        self.created_at = created_at
+        self.description = description
+        self.users = users if users else list()
+        self.companies = companies if companies else list()
+        self.projects = projects if projects else list()
+        self.id = id if id else self.id

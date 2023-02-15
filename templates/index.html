@@ -1,17 +1,16 @@
 {% block content %}
 <h2>ПСКК - тестовый запуск</h2>
 <h4><a href="\login"><span>Личный кабинет</span></a> </h4>
-{% for post in posts %}
-<small>{{ post.date }}</small>
+{% for new in news %}
+<small>{{ new.created_at }}</small>
 <p>
   <h3>
-    {{ post.title }}
+    {{ new.title }}
   </h3> 
 <p>
-  <i>{{ post.description }}</i>
+  <i>{{ new.body }}</i>
 </p>
-  <p>{{ post.html[:100]|safe }}</p> 
-    <a href="{{ post.path }}"><span>Читать</span></a> 
+    <a href="/news/{{ new.id }}"><span>Читать</span></a>
 </p>
 {% endfor %}
 {% endblock content %}

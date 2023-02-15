@@ -1,92 +1,75 @@
-from sqlalchemy import Column, Integer, String, DATE
-from sqlalchemy.orm import relationship
 import datetime as dt
-from entities.Base import Base
-from entities.Assosiations import user_project, user_skill
+from entities.Associations import tie_user_company, tie_user_project, tie_user_skill
+from sqlalchemy import Column, String, Integer, DATE, DATETIME
+from sqlalchemy.orm import relationship
+from app_db import db
 
-class User(Base):
-    __tablename__ = "user"
 
+class User(db.Model):
     id = Column(Integer, primary_key=True)
 
-    status = Column(String(30))
+    username = Column(String(32))
 
-    username = Column(String(30))
+    password = Column(String(32))
 
-    password = Column(String)
+    email = Column(String(32))
 
-    email = Column(String)
-
-    phone = Column(String(24))
-
-    city = Column(String(64))
-
-    index = Column(Integer)
-
-    passport = Column(String(10))
-
-    inn = Column(String(10))  # ИНН
-
-    name = Column(String)
-
-    surname = Column(String)
-
-    fathers_name = Column(String)
+    fio = Column(String(256))
 
     date_of_birth = Column(DATE)
 
-    date_of_reg = Column(DATE) #date of registration
+    sex = Column(String(8))
 
-    num_of_projects = Column(Integer)
+    source_of_knowing_about_pskk = Column(String(64))  # how is the company get familiar with pskk
 
-    job_role = Column(String)
+    phone_number = Column(String(32))
+
+    address = Column(String(256))
+
+    post_index = Column(String(32))
+
+    inn = Column(String(16))
+
+    created_at = Column(DATETIME)
+
+    occupation = Column(String(256))  # worker, self-employed etc
 
     company_name = Column(String)
 
-    come_from = Column(String(64)) #источник, благодаря которому узнали о ПСКК
+    companies = relationship("Company", secondary=tie_user_company, back_populates='users', lazy="joined")
 
-    skills = relationship("Project", secondary=user_skill, back_populates='skills')
+    skills = relationship("Skill", secondary=tie_user_skill, back_populates='users', lazy="joined")
 
-    projects = relationship("Project", secondary=user_project, back_populates='users')
+    projects_participated = relationship("Project", secondary=tie_user_project, back_populates='users', lazy="joined")
+
+    projects_initiated = relationship("Project", back_populates='user_initiator', lazy="joined")
 
     def __repr__(self):
-        ...
-        return f"User(id={self.id!r}, name={self.username!r}, fullname={self.email!r})"
+        return f"User(id={self.id!r}, fio={self.username!r}, fullname={self.email!r})"
 
-    def __init__(self, username: str, password: str, email: str = '', phone: str = '', city: str = '', index: int = '',
-                 passport: str = '', inn: str = '', name: str = '', surname: str = '', fathers_name: str = '',
-                 date_of_birth: dt.date = dt.date(1, 1, 1),date_of_reg: dt.date = dt.date(1, 1, 1), num_of_projects: int = '',
-                 job_role: str = '', company_name: str = '', come_from: str = '', skills = [], projects = []):
+    def __init__(self, username: str, password: str, email: str, fio: str, sex: str, date_of_birth: dt.date,
+                 source_of_knowing_about_pskk: str, phone_number: str, address: str = "", post_index: str = "",
+                 inn: str = "", occupation: str = "", company_name: str = "", companies: list = None,
+                 skills: list = None, projects_participated: list = None, projects_initiated: list = None,
+                 id: int = None, created_at: dt.datetime = dt.datetime.now()):
         self.username = username
         self.password = password
         self.email = email
-        self.phone = phone
-        self.city = city
-        self.index = index
-        self.passport = passport
+        self.fio = fio
+        self.sex = sex
+        self.date_of_birth = date_of_birth
+        self.source_of_knowing_about_pskk = source_of_knowing_about_pskk
+        self.phone_number = phone_number
+        self.address = address
+        self.post_index = post_index
         self.inn = inn
-        self.name = name
-        self.surname = surname
-        self.fathers_name = fathers_name
-        self.date_of_birth = date_of_birth
-        self.date_of_reg = date_of_reg
-        self.num_of_projects = num_of_projects
-        self.job_role = job_role
+        self.occupation = occupation
         self.company_name = company_name
-        self.come_from = come_from
-        self.skills = skills
-        self.projects = projects
+        self.created_at = created_at
+        self.companies = companies if companies else list()
+        self.skills = skills if skills else list()
+        self.projects_participated = projects_participated if projects_participated else list()
+        self.projects_initiated = projects_initiated if projects_initiated else list()
+        self.id = id if id else self.id
 
-    def update_data(self, username: str, email: str = '', name: str = '', surname: str = '', fathers_name: str = '',
-                    date_of_birth: dt.date = dt.date(1, 1, 1), job_role: str = '', company_name: str = ''):
-        self.username = username
-        self.email = email
-        self.name = name
-        self.surname = surname
-        self.fathers_name = fathers_name
-        self.date_of_birth = date_of_birth
-        self.job_role = job_role
-        self.company_name = company_name
 
-    def update_password(self, password: str):
-        self.password = password

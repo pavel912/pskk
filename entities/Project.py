@@ -1,45 +1,52 @@
-from sqlalchemy import Column, Integer, String, DATE
-from sqlalchemy.orm import relationship
 import datetime as dt
-from entities.Base import Base
-from entities.Assosiations import user_project, project_skill
+from entities.Associations import tie_user_project, tie_project_skill, tie_company_project
+from sqlalchemy import Column, String, Integer, DATE, DATETIME, ForeignKey
+from sqlalchemy.orm import relationship
+from app_db import db
 
-class Project(Base):
-    __tablename__ = "project"
 
+class Project(db.Model):
     id = Column(Integer, primary_key=True)
 
     name = Column(String(256))
 
-    initiator = Column(String(64))
+    user_initiator_id = Column(Integer, ForeignKey("user.id"))
 
-    type = Column(String(64))
+    user_initiator = relationship("User", back_populates="projects_initiated")
+
+    project_type = Column(String(64))
 
     description = Column(String(1024))
 
-    created_at = Column(DATE)
+    created_at = Column(DATETIME)
 
     end_plan = Column(DATE)
 
-    status = Column(String(64))
+    status_id = Column(Integer, ForeignKey("project_status.id"))
 
-    skill_need = relationship("User", secondary=project_skill, back_populates='skills') #create relations with skills table
+    status = relationship("ProjectStatus", back_populates="projects", lazy="joined")
 
-    users = relationship("User", secondary=user_project, back_populates='projects')
+    users = relationship("User", secondary=tie_user_project, back_populates='projects_participated', lazy="joined")
+
+    companies = relationship("Company", secondary=tie_company_project, back_populates='projects', lazy="joined")
+
+    required_skills = relationship("Skill", secondary=tie_project_skill, back_populates='projects', lazy="joined")
 
     def __repr__(self):
         ...
         return f"Project(id={self.id!r}, name={self.name!r}, created_at={self.created_at!r})"
 
-    def __init__(self, name: str, initiator: str, type: str, description: str = '',
-                 created_at: dt.date = dt.date(1, 1, 1), end_plan: dt.date = dt.date(1, 1, 1),
-                 status: str = '', skill_need = [], users = []):
+    def __init__(self, name: str, user_initiator_id: int, project_type: str, description: str,
+                 end_plan: dt.date, users: list = None, companies: list = None, required_skills: list = None,
+                 id: int = None, created_at: dt.datetime = dt.datetime.now()):
         self.name = name
-        self.initiator = initiator
-        self.type = type
+        self.user_initiator_id = user_initiator_id
+        self.project_type = project_type
         self.description = description
         self.created_at = created_at
         self.end_plan = end_plan
-        self.status = status
-        self.skill_need = skill_need
-        self.users = users
+        self.status_id = 1  # initiated
+        self.users = users if users else list()
+        self.companies = companies if companies else list()
+        self.required_skills = required_skills if required_skills else list()
+        self.id = id if id else self.id
