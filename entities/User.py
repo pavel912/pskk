@@ -1,6 +1,6 @@
 import datetime as dt
 from entities.Associations import tie_user_company, tie_user_project, tie_user_skill
-from sqlalchemy import Column, String, Integer, DATE, DATETIME
+from sqlalchemy import Column, String, Integer, DATE, DATETIME, TEXT
 from sqlalchemy.orm import relationship
 from app_db import db
 
@@ -34,9 +34,13 @@ class User(db.Model):
 
     occupation = Column(String(256))  # worker, self-employed etc
 
-    company_name = Column(String)
+    company_name = Column(String(1024))
+
+    about_me = Column(TEXT)
 
     companies = relationship("Company", secondary=tie_user_company, back_populates='users', lazy="joined")
+
+    superuser_in_companies = relationship("Company", back_populates='users', lazy="joined")
 
     skills = relationship("Skill", secondary=tie_user_skill, back_populates='users', lazy="joined")
 
@@ -49,7 +53,8 @@ class User(db.Model):
 
     def __init__(self, username: str, password: str, email: str, fio: str, sex: str, date_of_birth: dt.date,
                  source_of_knowing_about_pskk: str, phone_number: str, address: str = "", post_index: str = "",
-                 inn: str = "", occupation: str = "", company_name: str = "", companies: list = None,
+                 inn: str = "", occupation: str = "", company_name: str = "", about_me: str = "",
+                 companies: list = None, superuser_in_companies: list = None,
                  skills: list = None, projects_participated: list = None, projects_initiated: list = None,
                  id: int = None, created_at: dt.datetime = dt.datetime.now()):
         self.username = username
@@ -66,7 +71,9 @@ class User(db.Model):
         self.occupation = occupation
         self.company_name = company_name
         self.created_at = created_at
+        self.about_me = about_me
         self.companies = companies if companies else list()
+        self.superuser_in_companies = superuser_in_companies if superuser_in_companies else list()
         self.skills = skills if skills else list()
         self.projects_participated = projects_participated if projects_participated else list()
         self.projects_initiated = projects_initiated if projects_initiated else list()

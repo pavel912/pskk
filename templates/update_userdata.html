@@ -64,6 +64,10 @@
             <input type="text" name="company_name" id="company_name" value={{ user.company_name if user else "" }}>
         </div>
         <div class="form-example">
+            <label for="about_me">Write some information about yourself: </label>
+            <input type="text" name="about_me" id="about_me" value={{ user.about_me if user else "" }}>
+        </div>
+        <div class="form-example">
             <input type="submit" value="Update data">
         </div>
     </form>

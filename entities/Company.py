@@ -1,6 +1,6 @@
 import datetime as dt
 from entities.Associations import tie_company_skill, tie_company_project, tie_user_company
-from sqlalchemy import Column, String, Integer, DATE, DATETIME
+from sqlalchemy import Column, String, Integer, DATE, DATETIME, ForeignKey
 from sqlalchemy.orm import relationship
 from app_db import db
 
@@ -17,6 +17,10 @@ class Company(db.Model):
 
     representative_fio = Column(String(256))
 
+    superuser_id = Column(Integer, ForeignKey("user.id"))
+
+    superuser = relationship("User", back_populates="superuser_in_companies")
+
     address = Column(String(128))
 
     post_index = Column(String(32))
@@ -26,8 +30,6 @@ class Company(db.Model):
     registered_as_company_at = Column(DATE)
 
     created_at = Column(DATETIME)  # date of registration on the platform
-
-    source_of_knowing_about_pskk = Column(String(64))  # how is the company get familiar with pskk
 
     users = relationship("User", secondary=tie_user_company, back_populates='companies', lazy="joined")
 
@@ -39,20 +41,20 @@ class Company(db.Model):
         ...
         return f"Company(id={self.id!r}, company_name={self.company_name!r}, inn={self.inn!r})"
 
-    def __init__(self, company_name: str, email: str, phone_number: str, representative_fio: str, address: str,
-                 post_index: int, inn: str, registered_as_company_at: dt.date, source_of_knowing_about_pskk: str,
+    def __init__(self, company_name: str, email: str, phone_number: str, representative_fio: str,
+                 superuser_id: int, address: str, post_index: int, inn: str, registered_as_company_at: dt.date,
                  users: list = None, skills: list = None, projects: list = None, id: int = None,
                  created_at: dt.datetime = dt.datetime.now()):
         self.company_name = company_name
         self.email = email
         self.phone_number = phone_number
         self.representative_fio = representative_fio
+        self.superuser_id = superuser_id
         self.address = address
         self.post_index = post_index
         self.inn = inn
         self.registered_as_company_at = registered_as_company_at
         self.created_at = created_at
-        self.source_of_knowing_about_pskk = source_of_knowing_about_pskk
         self.users = users if users else list()
         self.skills = skills if skills else list()
         self.projects = projects if projects else list()

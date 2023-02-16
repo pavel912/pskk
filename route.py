@@ -155,6 +155,12 @@ def update_user(id):
                         request.form["inn"],
                         request.form["occupation"],
                         request.form["company_name"],
+                        request.form["about_me"],
+                        companies=user.companies,
+                        superuser_in_companies=user.superuser_in_companies,
+                        skills=user.skills,
+                        projects_participated=user.projects_participated,
+                        projects_initiated=user.projects_initiated,
                         id=user.id,
                         created_at=user.created_at)
 
