@@ -8,11 +8,9 @@ from db import db
 class User(db.Model):
     id = Column(Integer, primary_key=True)
 
-    username = Column(String(32))
+    email = Column(String(32))
 
     password = Column(String(32))
-
-    email = Column(String(32))
 
     fio = Column(String(256))
 
@@ -51,13 +49,12 @@ class User(db.Model):
     def __repr__(self):
         return f"User(id={self.id!r}, fio={self.username!r}, fullname={self.email!r})"
 
-    def __init__(self, username: str, password: str, email: str, fio: str, sex: str, date_of_birth: dt.date,
+    def __init__(self, password: str, email: str, fio: str, sex: str, date_of_birth: dt.date,
                  source_of_knowing_about_pskk: str, phone_number: str, address: str = "", post_index: str = "",
                  inn: str = "", occupation: str = "", company_name: str = "", about_me: str = "",
                  companies: list = None, superuser_in_companies: list = None,
                  skills: list = None, projects_participated: list = None, projects_initiated: list = None,
                  id: int = None, created_at: dt.datetime = dt.datetime.now()):
-        self.username = username
         self.password = password
         self.email = email
         self.fio = fio

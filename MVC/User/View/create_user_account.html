@@ -7,10 +7,6 @@
 <body>
     <form action="/users/create" method="post" class="form-example" enctype="multipart/form-data">
         <div class="form-example">
-            <label for="username">Enter your login: </label>
-            <input type="text" name="username" id="username" required value={{ user.username if user else "" }}>
-        </div>
-        <div class="form-example">
             <label for="password">Enter your password: </label>
             <input type="password" name="password" id="password" required>
         </div>

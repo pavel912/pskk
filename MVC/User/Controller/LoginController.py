@@ -14,7 +14,7 @@ login_app = Blueprint(
 @login_app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        user = db.session.execute(db.select(User).where(User.username == request.form["username"] and
+        user = db.session.execute(db.select(User).where(User.email == request.form["email"] and
                                                         User.password == request.form["password"])).scalar()
         if not user:
             return make_response(render_template('login.html', flash_message="Incorrect login or password"), 401)

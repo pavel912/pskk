@@ -13,21 +13,34 @@ from db import db
 import os
 from utils.DataValidator import convert_string_to_date
 
-app = Flask(__name__)
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # replace it later for safety issues
-app.config.from_object(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.abspath(os.getcwd()) + '\db\pskk_db.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-for bp in [news_app, company_app, project_app, project_status_app, request_app, skill_app, user_app, login_app]:
-    app.register_blueprint(bp)
+def create_app():
+    app = Flask(__name__)
+    app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # replace it later for safety issues
+    app.config.from_object(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.abspath(os.getcwd()) + '\db\pskk_db.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db.init_app(app)
+    for bp in [news_app, company_app, project_app, project_status_app, request_app, skill_app, user_app, login_app]:
+        app.register_blueprint(bp)
+
+    db.init_app(app)
+
+    return app
+
+
+app = create_app()
+port = 5000
 
 
 @app.route("/", methods=["GET"])
 def index():
     return redirect("/news")
+
+
+"""
+if __name__ == "main":
+    app.run(port=port)
 
 
 # test data
@@ -43,3 +56,4 @@ with app.app_context():
     db.session.add(news2)
     db.session.add(user)
     db.session.commit()
+"""

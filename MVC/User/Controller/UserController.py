@@ -13,6 +13,13 @@ user_app = Blueprint(
     template_folder=os.path.abspath(os.getcwd()) + '/MVC/User/View')
 
 
+@user_app.route("/", methods=["GET"])
+def get_all_users():
+    users = db.session.query(User).get()
+
+    return users
+
+
 @user_app.route("/<id>", methods=["GET"])
 def get_user_page(id):
     if not is_exists_user_session(id):
@@ -28,12 +35,12 @@ def create_user():
     if request.method == "POST":
         error_messages = []
 
-        if db.session.execute(db.select(User).where(User.username == request.form["username"])).first():
-            error_messages.append("User with this username already exists")
+        if db.session.execute(db.select(User).where(User.email == request.form["email"])).first():
+            error_messages.append("User with this email already exists")
         elif request.form["password"] != request.form["confirm_password"]:
             error_messages.append("Passwords do not match")
 
-        user = User(request.form["username"],
+        user = User(
                     request.form["password"],
                     request.form["email"],
                     request.form["fio"],
@@ -88,9 +95,9 @@ def update_user(id):
 
             password = request.form["new_password"]
 
-        new_user = User(user.username,
+        new_user = User(
                         password,
-                        request.form["email"],
+                        user.email,
                         request.form["fio"],
                         request.form["sex"],
                         convert_string_to_date(request.form["date_of_birth"]),
