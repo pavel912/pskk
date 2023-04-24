@@ -1,0 +1,16 @@
+{% block content %}
+<h2>ПСКК - тестовый запуск</h2>
+<h4><a href="/auth/login"><span>Личный кабинет</span></a> </h4>
+{% for new in news %}
+<small>{{ new.created_at }}</small>
+<p>
+  <h3>
+    {{ new.title }}
+  </h3> 
+<p>
+  <i>{{ new.body }}</i>
+</p>
+    <a href="/news/{{ new.id }}"><span>Читать</span></a>
+</p>
+{% endfor %}
+{% endblock content %}
