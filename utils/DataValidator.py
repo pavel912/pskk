@@ -1,4 +1,4 @@
-from MVC.User.Model.User import User
+from api.User.Model.User import User
 import re
 import datetime as dt
 
