@@ -52,6 +52,8 @@ class User(db.Model):
 
     role = relationship('Role', uselist=False, back_populates="users", lazy="joined")
 
+    documents = relationship('Document', back_populates="users", lazy="joined")
+
     def __repr__(self):
         return to_json(self)
 
@@ -59,7 +61,8 @@ class User(db.Model):
                  source_of_knowing_about_pskk: str, phone_number: str, role, address: str = "", post_index: str = "",
                  inn: str = "", occupation: str = "", company_name: str = "", about_me: str = "",
                  companies: list = None, superuser_in_companies: list = None,
-                 skills: list = None, projects_participated: list = None, projects_initiated: list = None,
+                 skills: list = None, projects_participated: list = None,
+                 projects_initiated: list = None, documents: list = None,
                  id: int = None, created_at: dt.datetime = dt.datetime.now()):
         self.password = password
         self.email = email
@@ -81,4 +84,5 @@ class User(db.Model):
         self.skills = skills if skills else list()
         self.projects_participated = projects_participated if projects_participated else list()
         self.projects_initiated = projects_initiated if projects_initiated else list()
+        self.documents = documents if documents else list()
         self.id = id if id else self.id

@@ -8,6 +8,8 @@ from api.User.Model.User import User
 from db import db
 from api.Skill.Model.Skill import Skill
 from utils.SessionsUtils import is_exists_user_session, build_response, is_admin
+import requests
+import json
 
 skill_app = Blueprint(
     "skill",
@@ -33,12 +35,23 @@ def create_skill():
     skill = Skill(
         request.json['name'],
         request.json['skill_type'],
-        "In review",
+        "Created",
         request.json['description']
     )
 
     db.session.add(skill)
     db.session.commit()
+
+    req_body = {
+        'request_type': 'create_skill',
+        'entity_type': 'skill',
+        'entity_id': skill.id
+    }
+
+    response = requests.post("http://localhost:5000", json=json.dumps(req_body))
+
+    if response.status_code >= 300:
+        return build_response(f"'Failed to create skill'", 422)
 
     return build_response(f"'Created skill with id': {skill.id}", 201)
 
@@ -66,6 +79,17 @@ def update_skill(id):
     db.session.delete(old_skill)
     db.session.add(skill)
     db.session.commit()
+
+    req_body = {
+        'request_type': 'validation',
+        'entity_type': 'skill',
+        'entity_id': skill.id
+    }
+
+    response = requests.post("http://localhost:5000/api/requests", json=json.dumps(req_body))
+
+    if response.status_code >= 300:
+        return build_response(f"'Failed to update skill with id': {skill.id}", 422)
 
     return build_response("{}", 200)
 
