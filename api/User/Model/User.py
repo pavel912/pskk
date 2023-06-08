@@ -1,13 +1,14 @@
 import datetime as dt
 
-from api.Social.Model.Associations import tie_user_company, tie_user_project, tie_user_skill
+from Social.Model.Associations import tie_user_company, tie_user_project, tie_user_skill
 from sqlalchemy import Column, String, Integer, DATE, DATETIME, TEXT, ForeignKey
 from sqlalchemy.orm import relationship
 from db import db
 from utils.SessionsUtils import to_json
+from flask_login import UserMixin
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = Column(Integer, primary_key=True)
 
     email = Column(String(32))
@@ -52,7 +53,17 @@ class User(db.Model):
 
     role = relationship('Role', uselist=False, back_populates="users", lazy="joined")
 
-    documents = relationship('Document', back_populates="users", lazy="joined")
+    documents = relationship('Document', back_populates="user", lazy="joined")
+
+    def get(user_id):
+        user = db.session.execute(db.select(User).where(User.id == int(user_id))).first()
+        try:
+            if len(user) > 0:
+                return user[0]
+            else:
+                return None
+        except:
+            return user
 
     def __repr__(self):
         return to_json(self)

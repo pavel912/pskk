@@ -4,13 +4,14 @@ import os
 import requests
 from flask import Blueprint, request
 from db import db
-from api.Request.Model.Request import Request
-from utils.SessionsUtils import build_response, is_admin
+from Request.Model.Request import Request
+from utils.SessionsUtils import build_response
+from utils.TokenUtils import token_required, admin_only
 
 request_app = Blueprint(
     "request",
     __name__,
-    url_prefix="/api/requests")
+    url_prefix="/api/requests/")
 
 entities = {
         "skill",
@@ -18,29 +19,34 @@ entities = {
     }
 
 
-@request_app.route("/", methods=["GET"])
+@request_app.route("", methods=["GET"])
+@token_required
 def get_all_requests():
-    requests = [str(req) for req in Request.query().all()]
+    requests = [str(req) for req in Request.query.all()]
 
     return build_response(requests, 200)
 
 
-@request_app.route("/<id>", methods=["GET"])
+@request_app.route("<id>/", methods=["GET"])
+@token_required
 def get_request_by_id(id):
     req = db.get_or_404(Request, id)
 
     return build_response(str(req), 200)
 
 
-@request_app.route("/", methods=["POST"])
+@request_app.route("", methods=["POST"])
+@token_required
 def create_request():
-    if request.json["entity_type"] not in entities:
-        return build_response(f"'Entity {request.json['entity_type']} does not require validation'", 422)
+    form = json.loads(request.json)
+
+    if form["entity_type"] not in entities:
+        return build_response(f"'Entity {form['entity_type']} does not require validation'", 422)
 
     req = Request(
-        request.json["type"],
-        request.json["entity_type"],
-        request.json["entity_id"]
+        form["type"],
+        form["entity_type"],
+        form["entity_id"]
     )
 
     db.session.add(req)
@@ -49,12 +55,13 @@ def create_request():
     return build_response(f"'Created request with id': {req.id}", 201)
 
 
-@request_app.route("/<id>", methods=["PUT"])
+@request_app.route("<id>/", methods=["PUT"])
+@token_required
+@admin_only
 def update_request(id):
-    if not is_admin():
-        return build_response(f"'Insufficient privileges'", 401)
-
     old_req = db.get_or_404(Request, id)
+
+    form = json.loads(request.json)
 
     valid_statuses = {
         'In review',
@@ -62,18 +69,18 @@ def update_request(id):
         'Declined'
     }
 
-    if request.json["request_status"] not in valid_statuses:
-        return build_response(f"'Request status {request.json['request_status']} is incorrect'", 422)
+    if form["request_status"] not in valid_statuses:
+        return build_response(f"'Request status {form['request_status']} is incorrect'", 422)
 
-    if request.json["entity_type"] not in entities:
-        return build_response(f"'Entity {request.json['entity_type']} does not require validation'", 422)
+    if form["entity_type"] not in entities:
+        return build_response(f"'Entity {form['entity_type']} does not require validation'", 422)
 
     req = Request(
-        request.json["type"],
-        request.json["entity_type"],
-        request.json["entity_id"],
+        form["type"],
+        form["entity_type"],
+        form["entity_id"],
         id=old_req.id,
-        request_status=request.json["request_status"],
+        request_status=form["request_status"],
         created_at=old_req.created_at
     )
 
@@ -98,7 +105,8 @@ def update_request(id):
     return build_response("{}", 200)
 
 
-@request_app.route("/<id>", methods=["DELETE"])
+@request_app.route("<id>/", methods=["DELETE"])
+@token_required
 def delete_request(id):
     req = db.get_or_404(Request, id)
 

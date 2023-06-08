@@ -1,5 +1,5 @@
 import datetime as dt
-from api.Social.Model.Associations import tie_user_project, tie_project_skill, tie_company_project
+from Social.Model.Associations import tie_user_project, tie_project_skill, tie_company_project
 from sqlalchemy import Column, String, Integer, DATE, DATETIME, ForeignKey
 from sqlalchemy.orm import relationship
 from db import db
@@ -38,7 +38,7 @@ class Project(db.Model):
         return to_json(self)
 
     def __init__(self, name: str, user_initiator_id: int, project_type: str, description: str,
-                 end_plan: dt.date, users: list = None, companies: list = None, required_skills: list = None,
+                 end_plan: dt.date,  status_id: int = None, users: list = None, companies: list = None, required_skills: list = None,
                  id: int = None, created_at: dt.datetime = dt.datetime.now()):
         self.name = name
         self.user_initiator_id = user_initiator_id
@@ -46,7 +46,7 @@ class Project(db.Model):
         self.description = description
         self.created_at = created_at
         self.end_plan = end_plan
-        self.status_id = 1  # initiated
+        self.status_id = status_id if status_id else 1
         self.users = users if users else list()
         self.companies = companies if companies else list()
         self.required_skills = required_skills if required_skills else list()

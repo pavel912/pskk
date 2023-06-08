@@ -2,7 +2,7 @@ import datetime as dt
 from sqlalchemy import Column, String, Integer, DATETIME, ForeignKey
 from sqlalchemy.orm import relationship
 
-from api.User.Model.User import User
+from User.Model.User import User
 from db import db
 from utils.SessionsUtils import to_json
 

@@ -2,53 +2,59 @@ import os
 
 from flask import Blueprint, request
 
-from api.Company.Model.Company import Company
-from api.Project.Model.Project import Project
-from api.User.Model.User import User
+from Company.Model.Company import Company
+from Project.Model.Project import Project
+from User.Model.User import User
 from db import db
-from api.Skill.Model.Skill import Skill
-from utils.SessionsUtils import is_exists_user_session, build_response, is_admin
+from Skill.Model.Skill import Skill
+from utils.SessionsUtils import build_response
+from utils.TokenUtils import token_required
 import requests
 import json
 
 skill_app = Blueprint(
     "skill",
     __name__,
-    url_prefix="/api/skills")
+    url_prefix="/api/skills/")
 
 
-@skill_app.route("/", methods=["GET"])
+@skill_app.route("", methods=["GET"])
+@token_required
 def get_skills():
     skills = [str(skill) for skill in Skill.query.all()]
     return build_response(skills, 200)
 
 
-@skill_app.route("/<id>", methods=["GET"])
+@skill_app.route("<id>/", methods=["GET"])
+@token_required
 def get_skill_by_id(id):
     skill = db.get_or_404(Skill, id)
 
     return build_response(str(skill), 200)
 
 
-@skill_app.route("/", methods=["POST"])
+@skill_app.route("", methods=["POST"])
+@token_required
 def create_skill():
+    form = json.loads(request.json)
+
     skill = Skill(
-        request.json['name'],
-        request.json['skill_type'],
+        form['name'],
+        form['skill_type'],
         "Created",
-        request.json['description']
+        form['description']
     )
 
     db.session.add(skill)
     db.session.commit()
 
     req_body = {
-        'request_type': 'create_skill',
+        'request_type': 'validation',
         'entity_type': 'skill',
         'entity_id': skill.id
     }
 
-    response = requests.post("http://localhost:5000", json=json.dumps(req_body))
+    response = requests.post("http://localhost:5000/api/requests", json=json.dumps(req_body))
 
     if response.status_code >= 300:
         return build_response(f"'Failed to create skill'", 422)
@@ -56,19 +62,22 @@ def create_skill():
     return build_response(f"'Created skill with id': {skill.id}", 201)
 
 
-@skill_app.route("/<id>", methods=["PUT"])
+@skill_app.route("<id>/", methods=["PUT"])
+@token_required
 def update_skill(id):
     old_skill = db.get_or_404(Skill, id)
 
-    users = [db.get_or_404(User, user_id) for user_id in request.json['users']]
-    companies = [db.get_or_404(Company, company_id) for company_id in request.json['companies']]
-    projects = [db.get_or_404(Project, project_id) for project_id in request.json['projects']]
+    form = json.loads(request.json)
+
+    users = [db.get_or_404(User, user_id) for user_id in form['users']]
+    companies = [db.get_or_404(Company, company_id) for company_id in form['companies']]
+    projects = [db.get_or_404(Project, project_id) for project_id in form['projects']]
 
     skill = Skill(
-        request.json['name'],
-        request.json['skill_type'],
-        request.json['status'],
-        request.json['description'],
+        form['name'],
+        form['skill_type'],
+        form['status'],
+        form['description'],
         users,
         companies,
         projects,
@@ -94,7 +103,8 @@ def update_skill(id):
     return build_response("{}", 200)
 
 
-@skill_app.route("/<id>", methods=["DELETE"])
+@skill_app.route("<id>/", methods=["DELETE"])
+@token_required
 def delete_skill(id):
     old_skill = db.get_or_404(Skill, id)
 

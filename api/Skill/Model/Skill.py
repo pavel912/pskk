@@ -1,5 +1,5 @@
 import datetime as dt
-from api.Social.Model.Associations import tie_user_skill, tie_company_skill, tie_project_skill
+from Social.Model.Associations import tie_user_skill, tie_company_skill, tie_project_skill
 from sqlalchemy import Column, String, Integer, DATETIME
 from sqlalchemy.orm import relationship
 from db import db

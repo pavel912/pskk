@@ -1,5 +1,5 @@
-run:
-	flask --app main --debug run
+run_api:
+	python3 api/main.py
 
-test:
-	python3 -m pytest
+run_front:
+	python3 frontend/main.py

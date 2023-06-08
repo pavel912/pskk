@@ -1,4 +1,4 @@
-from api.User.Model.User import User
+from User.Model.User import User
 import re
 import datetime as dt
 

@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <title>
+            Main
+        </title>
+    </head>
+    <body>
+        <div>
+            <h1>Добрый день, {{user['fio']}}!</h1>
+        </div>
+        <div>
+            <div>
+                <h2>Ваша информация</h2>
+            </div>
+            <div>
+                <table>
+                {% for attr in user %}
+                    <tr>
+                        <td>
+                            {{attr}}
+                        </td>
+                        <td>
+                            {{user[attr]}}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </table>
+            </div>
+            <div>
+                <a href="/users/{{user['id']}}/edit">Редактировать</a>
+            </div>
+        </div>
+    </body>
+</html>
