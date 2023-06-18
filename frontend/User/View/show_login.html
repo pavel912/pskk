@@ -1,41 +1,35 @@
-<html>
-    <head>
-        <title>
-            Login
-        </title>
-    </head>
-    <body>
-        <div>
-            <form action="/login/login/" method="post">
-                <table>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <p>Ваш email:</p>
-                            </td>
-                            <td>
-                                <input type="email" name="email" id="email">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <p>Ваш пароль:</p>
-                            </td>
-                            <td>
-                                <input type="password" name="password" id="password">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button type="submit">
-                    Войти
-                </button>
-            </form>
-        </div>
-        <div>
-            <a href="/users/create/">
-                Зарегистрироваться
-            </a>
-        </div>
-    </body>
-</html>
+{% extends "Social/View/index.html" %}
+{% block content %}
+    <div>
+        <form action="/login/login/" method="post">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>Ваш email:</p>
+                        </td>
+                        <td>
+                            <input type="email" name="email" id="email">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>Ваш пароль:</p>
+                        </td>
+                        <td>
+                            <input type="password" name="password" id="password">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="submit">
+                Войти
+            </button>
+        </form>
+    </div>
+    <div>
+        <a href="/users/create/">
+            Зарегистрироваться
+        </a>
+    </div>
+{% endblock %}

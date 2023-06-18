@@ -7,7 +7,7 @@ import json
 login_app = Blueprint("login",
                      __name__,
                      url_prefix="/login/",
-                     template_folder='../View')
+                     template_folder='../../')
 
 api_path = "http://localhost:5000/api/auth/"
 
@@ -15,7 +15,7 @@ api_path = "http://localhost:5000/api/auth/"
 @login_app.route("login/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        data = json.dumps(request.form)
+        data = request.form
         response = requests.post(api_path + "login/", json=data)
         if response.status_code == 200:
             answer = response.json()

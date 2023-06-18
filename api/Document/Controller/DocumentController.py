@@ -1,13 +1,12 @@
-import os
+import json
 
-from flask import Blueprint, request
+import requests
 from Document.Model.Document import Document
 from User.Model.User import User
 from db import db
+from flask import Blueprint, request
 from utils.SessionsUtils import build_response
 from utils.TokenUtils import token_required
-import requests
-import json
 
 document_app = Blueprint(
     "document",
@@ -33,7 +32,7 @@ def get_doc_by_id(id):
 @document_app.route("", methods=["POST"])
 @token_required
 def create_document():
-    form = json.loads(request.json)
+    form = request.get_json()
 
     doc = Document(
         form['name'],
@@ -64,7 +63,7 @@ def create_document():
 def update_document(id):
     old_doc = db.get_or_404(Document, id)
 
-    form = json.loads(request.json)
+    form = request.get_json()
 
     user = db.get_or_404(User, form['user_id'])
 
@@ -74,8 +73,8 @@ def update_document(id):
         form['status'],
         form['user_id'],
         user,
-        id = doc.id,
-        created_at=doc.created_at
+        id=old_doc.id,
+        created_at=old_doc.created_at
     )
 
     db.session.delete(old_doc)
@@ -88,7 +87,7 @@ def update_document(id):
         'entity_id': doc.id
     }
 
-    response = requests.post("http://localhost:5000/api/requests", json=json.dumps(req_body))
+    response = requests.post("http://localhost:5000/api/requests", json=req_body)
 
     if response.status_code >= 300:
         return build_response(f"'Failed to update skill with id': {doc.id}", 422)

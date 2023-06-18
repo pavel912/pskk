@@ -1,16 +1,14 @@
-import os
-
-from flask import Blueprint, request
+import json
 
 from Company.Model.Company import Company
+from Project.Model.Project import Project
 from Skill.Model.Skill import Skill
 from User.Model.User import User
 from db import db
-from Project.Model.Project import Project
-from utils.SessionsUtils import build_response
+from flask import Blueprint, request
 from utils.DataValidator import convert_string_to_date
+from utils.SessionsUtils import build_response
 from utils.TokenUtils import token_required
-import json
 
 project_app = Blueprint(
     "project",
@@ -35,7 +33,7 @@ def get_project_by_id(id):
 @project_app.route("", methods=["POST"])
 @token_required
 def create_project():
-    form = json.loads(request.json)
+    form = request.get_json()
     
     project = Project(
         form["name"],
@@ -57,7 +55,7 @@ def create_project():
 def update_project(id):
     old_project = db.get_or_404(Project, id)
 
-    form = json.loads(request.json)
+    form = request.get_json()
 
     companies = [db.get_or_404(Company, company_id) for company_id in form['companies']]
     users = [db.get_or_404(User, user_id) for user_id in form['users']]

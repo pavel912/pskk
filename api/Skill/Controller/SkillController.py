@@ -1,5 +1,3 @@
-import os
-
 from flask import Blueprint, request
 
 from Company.Model.Company import Company
@@ -36,7 +34,7 @@ def get_skill_by_id(id):
 @skill_app.route("", methods=["POST"])
 @token_required
 def create_skill():
-    form = json.loads(request.json)
+    form = request.get_json()
 
     skill = Skill(
         form['name'],
@@ -54,7 +52,7 @@ def create_skill():
         'entity_id': skill.id
     }
 
-    response = requests.post("http://localhost:5000/api/requests", json=json.dumps(req_body))
+    response = requests.post("http://localhost:5000/api/requests", json=req_body)
 
     if response.status_code >= 300:
         return build_response(f"'Failed to create skill'", 422)
@@ -67,7 +65,7 @@ def create_skill():
 def update_skill(id):
     old_skill = db.get_or_404(Skill, id)
 
-    form = json.loads(request.json)
+    form = request.get_json()
 
     users = [db.get_or_404(User, user_id) for user_id in form['users']]
     companies = [db.get_or_404(Company, company_id) for company_id in form['companies']]
@@ -95,7 +93,7 @@ def update_skill(id):
         'entity_id': skill.id
     }
 
-    response = requests.post("http://localhost:5000/api/requests", json=json.dumps(req_body))
+    response = requests.post("http://localhost:5000/api/requests", json=req_body)
 
     if response.status_code >= 300:
         return build_response(f"'Failed to update skill with id': {skill.id}", 422)

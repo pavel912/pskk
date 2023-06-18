@@ -1,9 +1,8 @@
-import os
-
-from flask import Blueprint, request, render_template, redirect, url_for, session
-import requests
 import json
+
+import requests
 from RequestUtils.RequestUtils import get_headers
+from flask import Blueprint, request, render_template, redirect, url_for, session
 
 request_app = Blueprint("request",
                      __name__,
@@ -34,7 +33,7 @@ def update_request(id):
     req = requests.get(api_path + f"{id}/", headers=get_headers(session['token'])).json()
                       
     if request.method == "POST":
-        data = json.dumps(request.form)
+        data = request.form
 
         response = requests.put(api_path + f"{id}/", json=data, headers=get_headers(session['token']))
         if response.status_code == 200:

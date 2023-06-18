@@ -1,12 +1,11 @@
-import os
+import json
 
-from flask import Blueprint, request
-from db import db
-from ProjectStatus.Model.ProjectStatus import ProjectStatus
 from Project.Model.Project import Project
+from ProjectStatus.Model.ProjectStatus import ProjectStatus
+from db import db
+from flask import Blueprint, request
 from utils.SessionsUtils import build_response
 from utils.TokenUtils import token_required
-import json
 
 project_status_app = Blueprint(
     "project_status",
@@ -31,7 +30,7 @@ def get_project_status_by_id(id):
 @project_status_app.route("", methods=["POST"])
 @token_required
 def create_project_status():
-    form = json.loads(request.json)
+    form = request.get_json()
 
     project_status = ProjectStatus(
         form['name'],
@@ -49,7 +48,7 @@ def create_project_status():
 def update_project_status(id):
     project_status = db.get_or_404(ProjectStatus, id)
 
-    form = json.loads(request.json)
+    form = request.get_json()
 
     projects = [db.get_or_404(Project, project_id) for project_id in form['projects']]
 

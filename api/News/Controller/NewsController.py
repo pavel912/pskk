@@ -1,11 +1,10 @@
-import os
+import json
 
 from News.Model.News import News
-from flask import Blueprint, request
 from db import db
+from flask import Blueprint, request
 from utils.SessionsUtils import build_response
 from utils.TokenUtils import token_required, admin_only
-import json
 
 news_app = Blueprint("news",
                      __name__,
@@ -28,7 +27,7 @@ def get_news_by_id(id):
 @token_required
 @admin_only
 def create_news():
-    form = json.loads(request.json)
+    form = request.get_json()
 
     news = News(
         form['title'],
@@ -47,7 +46,7 @@ def create_news():
 def update_news(id):
     news_old = db.get_or_404(News, id)
 
-    form = json.loads(request.json)
+    form = request.get_json()
 
     news = News(
         form['title'],

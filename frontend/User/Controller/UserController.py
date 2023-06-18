@@ -32,11 +32,11 @@ def show_user_by_id(id):
 @user_app.route("create/", methods=["GET", "POST"])
 def create_user():
     if request.method == "POST":
-        data = json.dumps(request.form)
+        data = request.form
         response = requests.post(api_path, json=data)
         if response.status_code == 201:
             user_id = response.json()['user_id']
-            return redirect(url_for("show_user_by_id", {'id': user_id}))
+            return redirect(url_for("user.show_user_by_id", id=user_id))
         
         return render_template("show_create_user.html", user=data, error="Invalid data")
     
@@ -45,14 +45,14 @@ def create_user():
 
 @user_app.route("<id>/edit/", methods=["GET", "POST"])
 def update_user(id):
-    user = requests.get(api_path + f"{id}/", headers=get_headers(session['token']))
+    user = requests.get(api_path + f"{id}/", headers=get_headers(session['token'])).json()
                       
     if request.method == "POST":
-        data = json.dumps(request.form)
+        data = request.form
 
         response = requests.put(api_path + f"{id}/", json=data, headers=get_headers(session['token']))
         if response.status_code == 200:
-            return redirect(url_for("show_user_by_id"))
+            return redirect(url_for("user.show_user_by_id", id=id))
         
         return render_template("show_update_user.html", user=data, error="Invalid data")
     
@@ -64,6 +64,6 @@ def delete_user(id):
     response = requests.delete(api_path + f"{id}/", headers=get_headers(session['token']))
     
     if response.status_code == 200:
-        return redirect(url_for("show_all_users"))
+        return redirect(url_for("user.show_all_users"))
     
-    return redirect(url_for("show_user_by_id"))
+    return redirect(url_for("user.show_user_by_id", id=id))

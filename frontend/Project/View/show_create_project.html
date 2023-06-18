@@ -1,0 +1,46 @@
+{% extends "Social/View/index.html" %}
+{% block content %}
+<div>
+    <form action="/projects/create/" method="post">
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        <p>Название:</p>
+                    </td>
+                    <td>
+                        <input type="text" name="name" id="name">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>Тип проекта:</p>
+                    </td>
+                    <td>
+                        <input type="text" name="project_type" id="project_type">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>Описание проекта:</p>
+                    </td>
+                    <td>
+                        <input type="text" name="description" id="description">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>Дата завершения:</p>
+                    </td>
+                    <td>
+                        <input type="date" name="end_plan" id="end_plan">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit">
+            Создать
+        </button>
+    </form>
+</div>
+{% endblock %}

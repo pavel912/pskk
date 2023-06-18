@@ -6,21 +6,24 @@ from Request.Controller.RequestController import request_app
 from Skill.Controller.SkillController import skill_app
 from User.Controller.UserController import user_app
 from User.Controller.LoginController import login_app
-import os
-
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(
+        __name__,
+        static_url_path='/static/', 
+        static_folder='Social/View/static',
+    )
     app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # replace it later for safety issues
     app.config.from_object(__name__)
 
-    for bp in [news_app,
-               company_app,
-               project_app,
-               request_app,
-               skill_app,
-               user_app,
-               login_app]:
+    for bp in [
+        login_app,
+        news_app,
+        company_app,
+        project_app,
+        request_app,
+        skill_app,
+        user_app]:
         app.register_blueprint(bp)
 
     return app

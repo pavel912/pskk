@@ -1,0 +1,78 @@
+{% extends "Social/View/index.html" %}
+{% block content %}
+        <div>
+            <form action="/users/create/" method="post">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <p>Ваш email:</p>
+                            </td>
+                            <td>
+                                <input type="email" name="email" id="email">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>Ваш пароль:</p>
+                            </td>
+                            <td>
+                                <input type="password" name="password" id="password">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>Подтвердите пароль</p>
+                            </td>
+                            <td>
+                                <input type="password" name="confirm_password" id="confirm_password">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>Фамилия Имя Отчество:</p>
+                            </td>
+                            <td>
+                                <input type="text" name="fio" id="fio">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>Пол:</p>
+                            </td>
+                            <td>
+                                <input type="text" name="sex" id="sex">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>Дата рождения</p>
+                            </td>
+                            <td>
+                                <input type="date" name="date_of_birth" id="date_of_birth">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>Как вы узнали о ПСКК?</p>
+                            </td>
+                            <td>
+                                <input type="text" name="source_of_knowing_about_pskk" id="source_of_knowing_about_pskk">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>Номер телефона</p>
+                            </td>
+                            <td>
+                                <input type="text" name="phone_number" id="phone_number">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="submit">
+                    Создать
+                </button>
+            </form>
+        </div>
+{% endblock %}

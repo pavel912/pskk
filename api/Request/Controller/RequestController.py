@@ -1,5 +1,4 @@
 import json
-import os
 
 import requests
 from flask import Blueprint, request
@@ -38,7 +37,7 @@ def get_request_by_id(id):
 @request_app.route("", methods=["POST"])
 @token_required
 def create_request():
-    form = json.loads(request.json)
+    form = request.get_json()
 
     if form["entity_type"] not in entities:
         return build_response(f"'Entity {form['entity_type']} does not require validation'", 422)
@@ -61,7 +60,7 @@ def create_request():
 def update_request(id):
     old_req = db.get_or_404(Request, id)
 
-    form = json.loads(request.json)
+    form = request.get_json()
 
     valid_statuses = {
         'In review',
@@ -94,7 +93,7 @@ def update_request(id):
     response_body['status'] = req.request_status
 
     response = requests.put(f"http://localhost:5000/api/{req.entity_type}s/{req.entity_id}",
-                            json=json.dumps(response_body))
+                            json=response_body)
 
     if response.status_code >= 300:
         return build_response(f"'Failed to update request with id': {req.id}", 422)

@@ -1,17 +1,15 @@
-import os
-
-from flask import request, Blueprint, session
+import json
 
 from Company.Model.Company import Company
 from Project.Model.Project import Project
 from Skill.Model.Skill import Skill
+from Social.Model.Role import Role
+from User.Model.User import User
+from db import db
+from flask import request, Blueprint
 from utils.DataValidator import convert_string_to_date
 from utils.SessionsUtils import build_response
 from utils.TokenUtils import token_required
-from User.Model.User import User
-from Social.Model.Role import Role
-from db import db
-import json
 
 user_app = Blueprint(
     "user",
@@ -37,12 +35,12 @@ def get_user_page(id):
 
 @user_app.route("", methods=["POST"])
 def create_user():
-    USER_ROLE_ID = db.session.execute(db.select(Role).where(Role.name == "User")).first().id
+    USER_ROLE_ID = db.session.execute(db.select(Role).where(Role.name == "User")).first()[0].id
 
     user_role = db.get_or_404(Role, USER_ROLE_ID)
     error_messages = []
 
-    form = json.loads(request.json)
+    form = request.get_json()
 
     if db.session.execute(db.select(User).where(User.email == form["email"])).first():
         error_messages.append("User with this email already exists")
@@ -57,7 +55,7 @@ def create_user():
                 convert_string_to_date(form["date_of_birth"]),
                 form["source_of_knowing_about_pskk"],
                 form["phone_number"],
-                form['role'] if form['role'] else user_role)
+                form['role'] if 'role' in form else user_role)
 
     # error_messages += validator.validate_user_data(user)
 
@@ -67,7 +65,7 @@ def create_user():
     db.session.add(user)
     db.session.commit()
 
-    return build_response("{" + f"'user_id': {user.id}" + "}", 201)
+    return {"user_id": user.id}, 201
 
 
 @user_app.route("<id>/", methods=["PUT"])
@@ -76,7 +74,7 @@ def update_user(id):
     user = db.get_or_404(User, id)
 
     password = user.password
-    form = json.loads(request.json)
+    form = request.get_json()
 
     if "password" in form:
         if form["password"] != user.password:

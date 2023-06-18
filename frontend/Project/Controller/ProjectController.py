@@ -32,7 +32,7 @@ def show_project_by_id(id):
 @project_app.route("create/", methods=["GET", "POST"])
 def create_project():
     if request.method == "POST":
-        data = json.dumps(request.form)
+        data = request.form
         response = requests.post(api_path, json=data, headers=get_headers(session['token']))
         if response.status_code == 201:
             return redirect(url_for("show_all_projects"))
@@ -47,7 +47,7 @@ def update_project(id):
     project = requests.get(api_path + f"{id}/", headers=get_headers(session['token'])).json()
                       
     if request.method == "POST":
-        data = json.dumps(request.form)
+        data = request.form
 
         response = requests.put(api_path + f"{id}/", json=data, headers=get_headers(session['token']))
         if response.status_code == 200:

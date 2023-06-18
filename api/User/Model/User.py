@@ -5,10 +5,9 @@ from sqlalchemy import Column, String, Integer, DATE, DATETIME, TEXT, ForeignKey
 from sqlalchemy.orm import relationship
 from db import db
 from utils.SessionsUtils import to_json
-from flask_login import UserMixin
 
 
-class User(db.Model, UserMixin):
+class User(db.Model):
     id = Column(Integer, primary_key=True)
 
     email = Column(String(32))
